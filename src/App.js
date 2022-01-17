@@ -1,22 +1,22 @@
-import logo from './logo.svg';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
+import AddTodo from './Components/AddTask/AddTodo';
+import TodoTable from './Components/TodoTable/TodoTable';
+import TodoDataProvider from './Context/TodoDataProvider';
+
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <BrowserRouter>
+        <TodoDataProvider>
+          <Routes>
+            <Route path="/" element={<TodoTable/>}/>
+            <Route path="addtodo" element={<AddTodo/>} />
+          </Routes>
+        </TodoDataProvider>
+        </BrowserRouter>
       </header>
     </div>
   );
