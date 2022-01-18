@@ -54,9 +54,7 @@ const EditTodo = () => {
     const getDate = (e) => {
         setUpdatedDate(e.target.value)
     }
-    const updateHandler = () => {
-        
-    }
+
 
 
 
