@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Typography } from '@mui/material';
 import logo from '../../logo.svg';
 import { Link } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -24,6 +24,10 @@ const TodoTable = () => {
   const [todoList, setTodoList] = useTodoProvider();
   const [taskStatus, setTaskStatus] = useState(false);
 
+
+  const checkBox = (id) => {
+
+  }
 
 
   const handleDelete = id => {
@@ -84,6 +88,7 @@ const TodoTable = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow >
+              <Checkbox align="center" sx={{ fontWeight: 'bold' }}>CheckBox</Checkbox>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Task Name</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Due Task Date</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Remaining Days</TableCell>
@@ -96,6 +101,7 @@ const TodoTable = () => {
                 key={todo.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
+                <Checkbox align="center" sx={{ fontWeight: 'bold' }} onClick={checkBox}></Checkbox>
                 <TableCell component="th" scope="row" align="center">
                   {todo.taskName}
                 </TableCell>
