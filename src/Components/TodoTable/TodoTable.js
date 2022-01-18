@@ -24,7 +24,6 @@ const TodoTable = () => {
   const [todoList, setTodoList] = useTodoProvider();
   const [taskStatus, setTaskStatus] = useState(false);
 
-  console.log(todoList);
 
 
   const handleDelete = id => {
@@ -50,19 +49,14 @@ const TodoTable = () => {
     })
   }
 
-
-  const toggle = (id, type) => {
-
-    const completeTask = todoList.find((task) => task.id === id);
-    if (type === 'done') {
-      completeTask.status = true;
-      setTaskStatus(true);
-    }
-    else {
-      completeTask.status = false;
-      setTaskStatus(false);
-    }
-
+  const handleToogle = id => {
+    const newTodoList = todoList.map((todo) => {
+      if (todo.id === id) {
+        todo.status = !todo.status;
+      }
+      return todo;
+    })
+    setTodoList(newTodoList);
   }
 
   return (
@@ -112,30 +106,30 @@ const TodoTable = () => {
                     <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }}><Link to={`/edittodo/${todo.id}`}><EditIcon sx={{ color: 'coral', fontSize: '40px' }}></EditIcon></Link></Button>
                   }
 
-                  <TableCell>
+
                   {
                     todo.status ?
 
-                      <Typography sx={{ color: 'green', display:'flex', alignItems:'center' }}>Completed
+                      <Typography sx={{ color: 'green', display: 'flex', alignItems: 'center' }}>Completed
 
-                        <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }} onClick={() => toggle(todo.id)}><ThumbUpOffAltIcon sx={{ color: 'green', fontSize: '40px' }} >
+                        <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }} onClick={() => handleToogle(todo.id)}><ThumbUpOffAltIcon sx={{ color: 'green', fontSize: '40px' }} >
 
                         </ThumbUpOffAltIcon>
                         </Button>
                       </Typography>
                       :
-                      <Typography sx={{ color: 'red', display:'flex', alignItems:'center' }}>Incomplete
-                        <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }} onClick={() => toggle(todo.id, 'done')}><ThumbDownOffAltIcon sx={{ color: 'red', fontSize: '40px' }} >
+                      <Typography sx={{ color: 'red', display: 'flex', alignItems: 'center' }}>Incomplete
+                        <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }} onClick={() => handleToogle(todo.id)}><ThumbDownOffAltIcon sx={{ color: 'red', fontSize: '40px' }} >
 
                         </ThumbDownOffAltIcon></Button>
 
                       </Typography>
                   }
-                  </TableCell>
 
-                  <TableCell>
+
+
                   <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }} onClick={() => handleDelete(todo.id)}><HighlightOffIcon sx={{ color: 'red', fontSize: '40px' }} ></HighlightOffIcon></Button>
-                  </TableCell>
+
                 </TableCell>
               </TableRow>
             ))}
