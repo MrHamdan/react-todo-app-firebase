@@ -22,12 +22,19 @@ const EditTodo = () => {
 
     console.log(todoList);
 
+    const updateMomentRemainingDays = (date) => {
+        const remainingDays = Math.ceil((new Date(date).getTime() - today.getTime()) / (1000 * 3600 * 24));
+        return remainingDays;
+    }
+
+
     const onSubmit = data => {
         const updatedTask = {
             id: selectedTask?.id,
-            remainingTask: updatedTaskName || selectedTask?.remainingTask,
+            taskName: updatedTaskName || selectedTask?.taskName,
             dueTaskDate: updatedDate || selectedTask?.dueTaskDate,
             status: updateStatus || selectedTask?.status,
+            remainingDays: updateMomentRemainingDays(updatedDate || selectedTask?.dueTaskDate)
         }
         const updatedTaskList = [];
         updatedTaskList.push(updatedTask);
@@ -69,8 +76,8 @@ const EditTodo = () => {
             <h1><span style={{ color: '#61dafb' }}>Edit</span><span> Your Task</span> <span style={{ color: '#61dafb' }}>Here</span></h1>
             <form onSubmit={handleSubmit(onSubmit)}>
 
-                <input defaultValue={selectedTask.remainingTask} placeholder="Rename Task"{...register("remainingTask", { required: true })} onBlur={getUpdatedTask} />
-                {errors.remainingTask && <span>This field is required</span>}
+                <input defaultValue={selectedTask.taskName} placeholder="Rename Task"{...register("taskName", { required: true })} onBlur={getUpdatedTask} />
+                {errors.taskName && <span>This field is required</span>}
 
                 <input defaultValue={selectedTask.dueTaskDate} type='date' min={currentDate} defaultValue={currentDate} {...register("dueTaskDate", { required: true })} onBlur={getDate} />
 

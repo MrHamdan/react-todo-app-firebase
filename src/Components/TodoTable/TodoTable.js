@@ -84,7 +84,7 @@ const TodoTable = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow >
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Remaining Task</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Task Name</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Due Task Date</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Remaining Days</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Actions</TableCell>
@@ -97,7 +97,7 @@ const TodoTable = () => {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row" align="center">
-                  {todo.remainingTask}
+                  {todo.taskName}
                 </TableCell>
                 <TableCell align="center">{todo.dueTaskDate}</TableCell>
                 <TableCell align="center">{todo.remainingDays}</TableCell>
