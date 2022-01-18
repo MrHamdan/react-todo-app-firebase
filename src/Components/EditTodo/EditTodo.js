@@ -17,6 +17,9 @@ const EditTodo = () => {
     const { todoid } = useParams();
     const selectedTask = todoList.find((task) => task.id == todoid);
 
+    const today = new Date();
+    const currentDate = today.getFullYear() + '-' + ('0' + today.getMonth() + 1).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+
     console.log(todoList);
 
     const onSubmit = data => {
@@ -36,8 +39,10 @@ const EditTodo = () => {
             title: 'Your work has been saved',
             showConfirmButton: false,
             timer: 1500
-          })
+        })
     };
+
+
 
 
 
@@ -61,19 +66,19 @@ const EditTodo = () => {
 
     return (
         <Box>
-            <h1><span style={{color:'#61dafb'}}>Edit</span><span> Your Task</span> <span style={{color:'#61dafb'}}>Here</span></h1>
+            <h1><span style={{ color: '#61dafb' }}>Edit</span><span> Your Task</span> <span style={{ color: '#61dafb' }}>Here</span></h1>
             <form onSubmit={handleSubmit(onSubmit)}>
-                
-                <input defaultValue={selectedTask.remainingTask}  placeholder="Rename Task"{...register("remainingTask",{required:true})} onBlur={getUpdatedTask}/>
+
+                <input defaultValue={selectedTask.remainingTask} placeholder="Rename Task"{...register("remainingTask", { required: true })} onBlur={getUpdatedTask} />
                 {errors.remainingTask && <span>This field is required</span>}
-                
-                <input defaultValue={selectedTask.dueTaskDate} type='date' {...register("dueTaskDate", { required: true })} onBlur={getDate}/>
-                
+
+                <input defaultValue={selectedTask.dueTaskDate} type='date' min={currentDate} defaultValue={currentDate} {...register("dueTaskDate", { required: true })} onBlur={getDate} />
+
                 {errors.dueTaskDate && <span>This field is required</span>}
                 <input readOnly defaultValue="Incomplete" type="hidden" {...register("status", { required: true })} />
-                <input type="submit" value="Update Task"/>
+                <input type="submit" value="Update Task" />
             </form>
-            <Button sx={{backgroundColor:'#61dafb !important', color:'black !important',fontWeight:'bold', fontSize:'20px'}} variant='contained' onClick={returnHomeButton}>See ToDo List</Button>
+            <Button sx={{ backgroundColor: '#61dafb !important', color: 'black !important', fontWeight: 'bold', fontSize: '20px' }} variant='contained' onClick={returnHomeButton}>See ToDo List</Button>
         </Box>
     );
 };

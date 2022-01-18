@@ -6,14 +6,6 @@ import Swal from 'sweetalert2';
 import useTodoProvider from '../../Context/useTodoProvider';
 
 
-function checkDate() {
-    var selectedText = document.getElementById('datepicker').value;
-    var selectedDate = new Date(selectedText);
-    var now = new Date();
-    if (selectedDate < now) {
-        alert("Date must be in the future");
-    }
-}
 
 
 const AddTodo = () => {
@@ -21,7 +13,8 @@ const AddTodo = () => {
     const { register, handleSubmit, resetField, watch, formState: { errors } } = useForm();
 
 
-
+    const today = new Date();
+    const currentDate = today.getFullYear() + '-' + ('0' + today.getMonth() + 1).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 
     const onSubmit = data => {
         const newTask = {
@@ -58,7 +51,7 @@ const AddTodo = () => {
                 <input placeholder="Task Name"{...register("remainingTask", { required: true })} />
                 {errors.remainingTask && <span>This field is required</span>}
 
-                <input id="datepicker" onChange="checkDate()" required className="datepicker-input" type="date" data-date-format="yyyy-mm-dd" {...register("dueTaskDate", { required: true })} />
+                <input type="date" min={currentDate} defaultValue={currentDate} {...register("dueTaskDate", { required: true })} />
 
                 {errors.dueTaskDate && <span>This field is required</span>}
                 <input type="submit" />
