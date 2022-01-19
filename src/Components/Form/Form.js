@@ -67,13 +67,7 @@ const Form = () => {
     return (
         <div>
             <Container
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100vh'
-                }}
+
             >
 
                 <div>
@@ -96,7 +90,7 @@ const Form = () => {
 
 
                     {(errors.taskName || errors.dueTaskDate) && <span>This field is required</span>}
-                    <Button sx={{ marginTop: '20px' }} variant='contained' onClick={navigateRoute}>View ToDo List</Button>
+                    <Button sx={{ marginTop: '20px' }} variant='contained' onClick={navigateRoute}>See Todo List</Button>
                 </form>
 
                 {isAdded &&
