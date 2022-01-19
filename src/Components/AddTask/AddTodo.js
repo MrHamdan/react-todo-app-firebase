@@ -54,7 +54,8 @@ const AddTodo = () => {
 
 
     return (
-        <Box>
+        <>
+            {/* <Box>
             <h1><span style={{ color: '#61dafb' }}>Put Your</span><span> Task Name</span> <span style={{ color: '#61dafb' }}>Here</span></h1>
             <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -67,7 +68,8 @@ const AddTodo = () => {
                 <input type="submit" />
             </form>
             <Button sx={{ backgroundColor: '#61dafb !important', color: 'black !important', fontWeight: 'bold', fontSize: '20px' }} variant='contained' onClick={returnHomeButton}>See ToDo List</Button>
-        </Box>
+        </Box> */}
+        </>
     );
 };
 

@@ -4,6 +4,7 @@ import AddTodo from './Components/AddTask/AddTodo';
 import EditTodo from './Components/EditTodo/EditTodo';
 import TodoTable from './Components/TodoTable/TodoTable';
 import TodoDataProvider from './Context/TodoDataProvider';
+import TodoFormShower from './Components/TodoFormShower/TodoFormShower';
 
 
 function App() {
@@ -11,13 +12,13 @@ function App() {
     <div className="App">
       <header className="App-header">
         <BrowserRouter>
-        <TodoDataProvider>
-          <Routes>
-            <Route path="/" element={<TodoTable/>}/>
-            <Route path="addtodo" element={<AddTodo/>} />
-            <Route path="edittodo/:todoid" element={<EditTodo/>} />
-          </Routes>
-        </TodoDataProvider>
+          <TodoDataProvider>
+            <Routes>
+              <Route path="/" element={<TodoTable />} />
+              <Route path="addtodo" element={<TodoFormShower />} />
+              <Route path="edittodo/:todoid" element={<TodoFormShower />} />
+            </Routes>
+          </TodoDataProvider>
         </BrowserRouter>
       </header>
     </div>

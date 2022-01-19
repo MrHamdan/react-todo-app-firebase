@@ -22,16 +22,13 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 const TodoTable = () => {
   const [todoList, setTodoList] = useTodoProvider();
-  const [taskStatus, setTaskStatus] = useState(false);
-  const [isDeleteDisabled, setIsDeleteDisabled] = useState(false);
 
   let arr = [];
 
   const checkBoxHandler = (e) => {
     if (e.target.checked) {
-      console.log(e.target.value);
-      const find = todoList.find(task => task.id == e.target.value)
-      console.log(find)
+
+      const find = todoList.find(task => task.id === e.target.value)
       arr.push(find)
       console.log(arr);
     }
@@ -40,11 +37,7 @@ const TodoTable = () => {
       arr.splice(arr.indexOf(unChecked), 1)
       console.log('Spliced Array', arr);
     }
-    if (arr.length > 0) {
-      setIsDeleteDisabled(false);
-    } else {
-      setIsDeleteDisabled(true);
-    }
+
   }
 
   const deleteMultipleTask = () => {
@@ -55,10 +48,9 @@ const TodoTable = () => {
 
     setTodoList(filteredArray);
   }
-  const deleteTask = id => {
-    const newTodoList = todoList.filter((task) => task.id !== id)
-    setTodoList(newTodoList);
-  }
+
+
+
 
 
   const handleDelete = id => {
@@ -115,7 +107,7 @@ const TodoTable = () => {
         }}>
         Add Task
       </Link><AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button>
-      <Button variant="contained" color="warning" disabled={isDeleteDisabled} sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>
+      <Button variant="contained" color="warning" sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
