@@ -23,10 +23,41 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 const TodoTable = () => {
   const [todoList, setTodoList] = useTodoProvider();
   const [taskStatus, setTaskStatus] = useState(false);
+  const [isDeleteDisabled, setIsDeleteDisabled] = useState(false);
 
+  let arr = [];
 
-  const checkBox = (id) => {
+  const checkBoxHandler = (e) => {
+    if (e.target.checked) {
+      console.log(e.target.value);
+      const find = todoList.find(task => task.id == e.target.value)
+      console.log(find)
+      arr.push(find)
+      console.log(arr);
+    }
+    if (!e.target.checked) {
+      const unChecked = arr.find(a => a.id === e.target.value)
+      arr.splice(arr.indexOf(unChecked), 1)
+      console.log('Spliced Array', arr);
+    }
+    if (arr.length > 0) {
+      setIsDeleteDisabled(false);
+    } else {
+      setIsDeleteDisabled(true);
+    }
+  }
 
+  const deleteMultipleTask = () => {
+    const filteredArray = todoList.filter((task) => {
+      return arr.indexOf(task) < 0;
+
+    });
+
+    setTodoList(filteredArray);
+  }
+  const deleteTask = id => {
+    const newTodoList = todoList.filter((task) => task.id !== id)
+    setTodoList(newTodoList);
   }
 
 
@@ -84,11 +115,12 @@ const TodoTable = () => {
         }}>
         Add Task
       </Link><AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button>
+      <Button variant="contained" color="warning" disabled={isDeleteDisabled} sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow >
-              <Checkbox align="center" sx={{ fontWeight: 'bold' }}>CheckBox</Checkbox>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>CheckBox</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Task Name</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Due Task Date</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Remaining Days</TableCell>
@@ -96,21 +128,21 @@ const TodoTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {todoList.map((todo) => (
+            {todoList.map((todo, index) => (
               <TableRow
                 key={todo.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <Checkbox align="center" sx={{ fontWeight: 'bold' }} onClick={checkBox}></Checkbox>
+                <Checkbox onChange={checkBoxHandler} value={todo.id} />
                 <TableCell component="th" scope="row" align="center">
                   {todo.taskName}
                 </TableCell>
                 <TableCell align="center">{todo.dueTaskDate}</TableCell>
                 <TableCell align="center">{todo.remainingDays}</TableCell>
                 <TableCell align="center" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-
-                  <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }}><Link to={`/edittodo/${todo.id}`}><EditIcon sx={{ color: 'coral', fontSize: '40px' }}></EditIcon></Link></Button>
-
+                  {!todo.status &&
+                    <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }}><Link to={`/edittodo/${todo.id}`}><EditIcon sx={{ color: 'coral', fontSize: '40px' }}></EditIcon></Link></Button>
+                  }
 
 
                   {

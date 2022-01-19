@@ -26,7 +26,7 @@ const AddTodo = () => {
 
     const onSubmit = data => {
         const newTask = {
-            id: Math.random() * 5000,
+            id: (Math.random() * 100).toString(),
             ...data,
             status: false,
             remainingDays: handleRemainingDays(data.dueTaskDate)
