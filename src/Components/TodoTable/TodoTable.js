@@ -108,9 +108,9 @@ const TodoTable = () => {
                 <TableCell align="center">{todo.dueTaskDate}</TableCell>
                 <TableCell align="center">{todo.remainingDays}</TableCell>
                 <TableCell align="center" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {!todo.status &&
-                    <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }}><Link to={`/edittodo/${todo.id}`}><EditIcon sx={{ color: 'coral', fontSize: '40px' }}></EditIcon></Link></Button>
-                  }
+
+                  <Button sx={{ margin: '0px 20px', backgroundColor: 'white !important', '&:hover': { backgroundColor: '#333 !important' } }}><Link to={`/edittodo/${todo.id}`}><EditIcon sx={{ color: 'coral', fontSize: '40px' }}></EditIcon></Link></Button>
+
 
 
                   {

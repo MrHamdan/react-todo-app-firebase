@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
+import moment from 'moment';
 import React from 'react';
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -15,8 +16,11 @@ const AddTodo = () => {
     const today = new Date();
     const currentDate = today.getFullYear() + '-' + ('0' + today.getMonth() + 1).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 
-    const remainingDays = () => {
-        const remainingDays = Math.ceil((new Date(watch('dueTaskDate')).getTime() - today.getTime()) / (1000 * 3600 * 24));
+    const handleRemainingDays = (dueTaskDate) => {
+        const given = moment(dueTaskDate, "YYYY-MM-DD");
+        var current = moment().startOf('day');
+        //Difference in number of days
+        let remainingDays = moment.duration(given.diff(current)).asDays();
         return remainingDays;
     }
 
@@ -25,7 +29,7 @@ const AddTodo = () => {
             id: Math.random() * 5000,
             ...data,
             status: false,
-            remainingDays: remainingDays()
+            remainingDays: handleRemainingDays(data.dueTaskDate)
         }
         const updatedTaskList = [...todoList, newTask];
         setTodoList(updatedTaskList);

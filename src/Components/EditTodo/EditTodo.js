@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useTodoProvider from '../../Context/useTodoProvider';
 import './EditTodo.css';
+import moment from 'moment';
 
 
 
@@ -22,9 +23,13 @@ const EditTodo = () => {
 
     console.log(todoList);
 
-    const updateMomentRemainingDays = (date) => {
-        const remainingDays = Math.ceil((new Date(date).getTime() - today.getTime()) / (1000 * 3600 * 24));
+    const updateMomentRemainingDays = (dueTaskDate) => {
+        const given = moment(dueTaskDate, "YYYY-MM-DD");
+        var current = moment().startOf('day');
+        //Difference in number of days
+        let remainingDays = moment.duration(given.diff(current)).asDays();
         return remainingDays;
+
     }
 
 
