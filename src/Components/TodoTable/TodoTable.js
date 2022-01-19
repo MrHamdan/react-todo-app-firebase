@@ -98,15 +98,14 @@ const TodoTable = () => {
           </Box>
         </Box>
       </Box>
-      <Button sx={{ marginBottom: '30px', backgroundColor: '#61dafb !important' }} variant='contained'><Link to='addtodo'
+      <Link to='addtodo'
         style={{
           color: 'black',
           textDecoration: 'none',
           fontWeight: 'bold',
           fontSize: '20px'
         }}>
-        Add Task
-      </Link><AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button>
+      <Button sx={{ marginBottom: '30px', backgroundColor: '#61dafb !important' ,color: 'black !important',textDecoration: 'none',fontWeight: 'bold', fontSize: '20px' }} variant='contained'>Add Task<AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button></Link>
       <Button variant="contained" color="warning" sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

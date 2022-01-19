@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import useTodoProvider from '../../Context/useTodoProvider';
 import './Form.css';
 
@@ -48,6 +49,13 @@ const Form = () => {
         setTodoList(updatedtodoList);
         resetField("taskName", "dueTaskDate");
         setIsAdded('true');
+        Swal.fire({
+            position: 'middle',
+            icon: 'success',
+            title: 'Your New Task Has Been Listed',
+            showConfirmButton: false,
+            timer: 1500
+        })
 
     }
 
@@ -63,13 +71,16 @@ const Form = () => {
         const newtodoList = todoList.map(task => updatedtodoList.find(o => o.id === task.id) || task);
         setTodoList(newtodoList);
         navigate('/');
+        Swal.fire({
+            position: 'middle',
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 1500
+        })
     }
     return (
         <div>
-            <Container
-
-            >
-
                 <div>
                     {
                         !todoid ? <h1><span style={{ color: '#61dafb' }}>Put Your</span><span> Task Name</span> <span style={{ color: '#61dafb' }}>Here</span></h1> : <h1><span style={{ color: '#61dafb' }}>Edit</span><span> Your Task</span> <span style={{ color: '#61dafb' }}>Here</span></h1>
@@ -90,13 +101,8 @@ const Form = () => {
 
 
                     {(errors.taskName || errors.dueTaskDate) && <span>This field is required</span>}
-                    <Button sx={{ marginTop: '20px' }} variant='contained' onClick={navigateRoute}>See Todo List</Button>
+                    <Button sx={{ backgroundColor: '#61dafb !important', color: 'black !important', fontWeight: 'bold', fontSize: '20px' }} variant='contained' onClick={navigateRoute}>See ToDo List</Button>
                 </form>
-
-                {isAdded &&
-                    <Alert sx={{ mt: 2 }} severity="success" onClose={() => setIsAdded(false)}>Task Added <strong>check ToDo Table</strong>. </Alert>
-                }
-            </ Container>
         </div>
     );
 };
