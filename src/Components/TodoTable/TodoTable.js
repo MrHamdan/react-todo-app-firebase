@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useTodoProvider from '../../Context/useTodoProvider';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Box, Button, Checkbox, Typography } from '@mui/material';
 import logo from '../../logo.svg';
-import { Link } from 'react-router-dom';
+import { Link, unstable_HistoryRouter, useLocation, useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -18,10 +18,37 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import '../../App.css';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import { child, get, getDatabase, ref } from 'firebase/database';
+import initializeAuthentication from '../Firebase/firebase.init';
+import useAuth from '../Hooks/useAuth';
 
 
 const TodoTable = () => {
   const [todoList, setTodoList] = useTodoProvider();
+
+
+
+  const { handleRegistration, handleEmailChange, handlePasswordChange, error, toggleLogin, isLogin, handleResetPassword, handleNameChange, handleGoogleSignIn, user, logOut } = useAuth();
+  const location = useLocation();
+
+  const history = useNavigate();
+
+  const redirect_uri = location.state?.from || '/';
+
+  const signInUsingGoogle = () => {
+    handleGoogleSignIn()
+      .then(result => {
+        if (result.user) {
+          history(redirect_uri);
+        }
+      })
+  }
+
+
+
+
+
+
 
   let arr = [];
 
@@ -48,6 +75,35 @@ const TodoTable = () => {
 
     setTodoList(filteredArray);
   }
+
+
+
+
+
+
+  useEffect(() => {
+    if (user) {
+      const dbRef = ref(getDatabase(initializeAuthentication()));
+      get(child(dbRef, `todoList/${user.uid}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const todos = snapshot.val();
+          const todoList = [];
+          for (let id in todos) {
+            todoList.push(todos[id])
+          }
+          setTodoList(todoList);
+        } else {
+          alert("No data available");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+  }, [user]);
+
+
+
+
 
 
 
@@ -96,6 +152,7 @@ const TodoTable = () => {
           <Box>
             <img style={{ width: '300px' }} src={logo} alt="" />
           </Box>
+          <h5 style={{ color: '#61dafb' }}>{user.email}</h5>
         </Box>
       </Box>
       <Link to='addtodo'
@@ -105,8 +162,12 @@ const TodoTable = () => {
           fontWeight: 'bold',
           fontSize: '20px'
         }}>
-      <Button sx={{ marginBottom: '30px', backgroundColor: '#61dafb !important' ,color: 'black !important',textDecoration: 'none',fontWeight: 'bold', fontSize: '20px' }} variant='contained'>Add Task<AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button></Link>
+        <Button sx={{ marginBottom: '30px', backgroundColor: '#61dafb !important', color: 'black !important', textDecoration: 'none', fontWeight: 'bold', fontSize: '20px' }} variant='contained'>Add Task<AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button></Link>
       <Button variant="contained" color="warning" sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>
+      {user?.email ?
+        <Button variant="contained" color="secondary" sx={{ mb: 2 }} onClick={logOut}>Log Out</Button>
+        :
+        <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={signInUsingGoogle}>Google Sign In</Button>}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

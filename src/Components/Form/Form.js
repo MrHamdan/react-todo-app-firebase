@@ -1,22 +1,23 @@
 import { Alert, Button, Container, Typography } from '@mui/material';
 import { display } from '@mui/system';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useTodoProvider from '../../Context/useTodoProvider';
 import './Form.css';
-import { getDatabase, push, ref, set } from "firebase/database";
+import { child, get, getDatabase, push, ref, set } from "firebase/database";
 import initializeAuthentication from '../Firebase/firebase.init';
+import useAuth from '../Hooks/useAuth';
 
 
 
-initializeAuthentication();
+
 
 const Form = () => {
     const database = getDatabase();
-
+    const { user } = useAuth();
     const [todoList, setTodoList] = useTodoProvider();
     const [updatedTaskName, setUpdatedTaskName] = useState('');
     const [updatedDate, setUpdatedDate] = useState('');
@@ -55,14 +56,28 @@ const Form = () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     const handleAddData = data => {
-        const db = getDatabase();
-        push(ref(db, 'todoList/'), {
+        const db = getDatabase(initializeAuthentication());
+        push(ref(db, 'todoList/' + user.uid), {
             id: (Math.random() * 100).toString(),
             ...data,
             status: false,
             currentDate,
-            remainingDays: handleRemainingDays(data.dueTaskDate)
+            remainingDays: handleRemainingDays(data.dueTaskDate),
+            email: user.email,
+            uid: user.uid
         });
         // const newTask = {
         //     id: (Math.random() * 100).toString(),
@@ -85,6 +100,16 @@ const Form = () => {
 
     }
 
+
+
+
+
+
+
+
+
+
+
     const handleUpdate = (data) => {
         console.log(data);
         const updatedTask = {
@@ -105,6 +130,11 @@ const Form = () => {
             timer: 1500
         })
     }
+
+
+
+
+
     return (
         <div>
             <div>
