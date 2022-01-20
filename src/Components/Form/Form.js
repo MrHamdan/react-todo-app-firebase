@@ -7,12 +7,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useTodoProvider from '../../Context/useTodoProvider';
 import './Form.css';
+import { getDatabase, push, ref, set } from "firebase/database";
+import initializeAuthentication from '../Firebase/firebase.init';
 
 
 
-
+initializeAuthentication();
 
 const Form = () => {
+    const database = getDatabase();
+
     const [todoList, setTodoList] = useTodoProvider();
     const [updatedTaskName, setUpdatedTaskName] = useState('');
     const [updatedDate, setUpdatedDate] = useState('');
@@ -36,19 +40,41 @@ const Form = () => {
         return remainingDays;
     }
 
-    const handleAddData = data => {
 
-        const newTask = {
+
+
+    // function writeUserData(userId, name, email, imageUrl) {
+    //     const db = getDatabase();
+    //     set(ref(db, 'users/'), {
+    //         username: 'Hamdan',
+    //         email: 'Hamdan@gmail.com',
+    //     });
+    // }
+
+
+
+
+
+    const handleAddData = data => {
+        const db = getDatabase();
+        push(ref(db, 'todoList/'), {
             id: (Math.random() * 100).toString(),
             ...data,
             status: false,
             currentDate,
             remainingDays: handleRemainingDays(data.dueTaskDate)
-        }
-        const updatedtodoList = [...todoList, newTask];
-        setTodoList(updatedtodoList);
-        resetField("taskName", "dueTaskDate");
-        setIsAdded('true');
+        });
+        // const newTask = {
+        //     id: (Math.random() * 100).toString(),
+        //     ...data,
+        //     status: false,
+        //     currentDate,
+        //     remainingDays: handleRemainingDays(data.dueTaskDate)
+        // }
+        // const updatedtodoList = [...todoList, newTask];
+        // setTodoList(updatedtodoList);
+        // resetField("taskName", "dueTaskDate");
+        // setIsAdded('true');
         Swal.fire({
             position: 'middle',
             icon: 'success',
@@ -81,28 +107,28 @@ const Form = () => {
     }
     return (
         <div>
-                <div>
-                    {
-                        !todoid ? <h1><span style={{ color: '#61dafb' }}>Put Your</span><span> Task Name</span> <span style={{ color: '#61dafb' }}>Here</span></h1> : <h1><span style={{ color: '#61dafb' }}>Edit</span><span> Your Task</span> <span style={{ color: '#61dafb' }}>Here</span></h1>
-                    }
-                </div>
-                <form form onSubmit={!todoid ? handleSubmit(handleAddData) : handleSubmit(handleUpdate)}>
-                    <label >Task Name</label>
+            <div>
+                {
+                    !todoid ? <h1><span style={{ color: '#61dafb' }}>Put Your</span><span> Task Name</span> <span style={{ color: '#61dafb' }}>Here</span></h1> : <h1><span style={{ color: '#61dafb' }}>Edit</span><span> Your Task</span> <span style={{ color: '#61dafb' }}>Here</span></h1>
+                }
+            </div>
+            <form form onSubmit={!todoid ? handleSubmit(handleAddData) : handleSubmit(handleUpdate)}>
+                <label >Task Name</label>
 
-                    <input placeholder={!todoid ? 'Task' : ''} defaultValue={todoid && selectedTask?.taskName}
-                        {...register("taskName", { required: true })} />
-
-
-                    <label >Add Due Date</label>
-
-                    <input type='date' defaultValue={!todoid ? currentDate : selectedTask?.dueTaskDate} min={currentDate} {...register("dueTaskDate", { required: true })} />
-
-                    <input type="submit" />
+                <input placeholder={!todoid ? 'Task' : ''} defaultValue={todoid && selectedTask?.taskName}
+                    {...register("taskName", { required: true })} />
 
 
-                    {(errors.taskName || errors.dueTaskDate) && <span>This field is required</span>}
-                    <Button sx={{ backgroundColor: '#61dafb !important', color: 'black !important', fontWeight: 'bold', fontSize: '20px' }} variant='contained' onClick={navigateRoute}>See ToDo List</Button>
-                </form>
+                <label >Add Due Date</label>
+
+                <input type='date' defaultValue={!todoid ? currentDate : selectedTask?.dueTaskDate} min={currentDate} {...register("dueTaskDate", { required: true })} />
+
+                <input type="submit" />
+
+
+                {(errors.taskName || errors.dueTaskDate) && <span>This field is required</span>}
+                <Button sx={{ backgroundColor: '#61dafb !important', color: 'black !important', fontWeight: 'bold', fontSize: '20px' }} variant='contained' onClick={navigateRoute}>See ToDo List</Button>
+            </form>
         </div>
     );
 };
