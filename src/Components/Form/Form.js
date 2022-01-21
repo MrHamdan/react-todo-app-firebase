@@ -1,27 +1,19 @@
-import { Alert, Button, Container, Typography } from '@mui/material';
-import { display } from '@mui/system';
+import { Button } from '@mui/material';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useTodoProvider from '../../Context/useTodoProvider';
 import './Form.css';
-import { child, get, getDatabase, push, ref, set } from "firebase/database";
+import { getDatabase, push, ref, update } from "firebase/database";
 import initializeAuthentication from '../Firebase/firebase.init';
 import useAuth from '../Hooks/useAuth';
 
 
-
-
-
 const Form = () => {
-    const database = getDatabase();
     const { user } = useAuth();
     const [todoList, setTodoList] = useTodoProvider();
-    const [updatedTaskName, setUpdatedTaskName] = useState('');
-    const [updatedDate, setUpdatedDate] = useState('');
-    const [isAdded, setIsAdded] = useState(false);
     const { todoid } = useParams();
     const selectedTask = todoList.find((task) => task.id === todoid);
     const today = new Date();
@@ -43,35 +35,9 @@ const Form = () => {
 
 
 
-
-    // function writeUserData(userId, name, email, imageUrl) {
-    //     const db = getDatabase();
-    //     set(ref(db, 'users/'), {
-    //         username: 'Hamdan',
-    //         email: 'Hamdan@gmail.com',
-    //     });
-    // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     const handleAddData = data => {
         const db = getDatabase(initializeAuthentication());
         push(ref(db, 'todoList/' + user.uid), {
-            id: (Math.random() * 100).toString(),
             ...data,
             status: false,
             currentDate,
@@ -79,17 +45,8 @@ const Form = () => {
             email: user.email,
             uid: user.uid
         });
-        // const newTask = {
-        //     id: (Math.random() * 100).toString(),
-        //     ...data,
-        //     status: false,
-        //     currentDate,
-        //     remainingDays: handleRemainingDays(data.dueTaskDate)
-        // }
-        // const updatedtodoList = [...todoList, newTask];
-        // setTodoList(updatedtodoList);
-        // resetField("taskName", "dueTaskDate");
-        // setIsAdded('true');
+        resetField('taskName', 'dueTaskDate');
+
         Swal.fire({
             position: 'middle',
             icon: 'success',
@@ -101,27 +58,13 @@ const Form = () => {
     }
 
 
-
-
-
-
-
-
-
-
-
     const handleUpdate = (data) => {
         console.log(data);
         const updatedTask = {
-            id: selectedTask?.id,
-            ...data,
+            taskName: data.taskName || selectedTask.taskName,
+            dueTaskDate: data.dueTaskDate || selectedTask.dueTaskDate,
             remainingDays: handleRemainingDays(data.dueTaskDate) || selectedTask.remainingDays
         }
-        const updatedtodoList = [];
-        updatedtodoList.push(updatedTask);
-        const newtodoList = todoList.map(task => updatedtodoList.find(o => o.id === task.id) || task);
-        setTodoList(newtodoList);
-        navigate('/');
         Swal.fire({
             position: 'middle',
             icon: 'success',
@@ -129,10 +72,14 @@ const Form = () => {
             showConfirmButton: false,
             timer: 1500
         })
+
+        const updates = {};
+        updates[`/todoList/${user.uid}/${todoid}/taskName`] = updatedTask.taskName;
+        updates[`/todoList/${user.uid}/${todoid}/dueTaskDate`] = updatedTask.dueTaskDate;
+        updates[`/todoList/${user.uid}/${todoid}/remainingDays`] = updatedTask.remainingDays;
+        return update(ref(getDatabase(initializeAuthentication())), updates);
+
     }
-
-
-
 
 
     return (

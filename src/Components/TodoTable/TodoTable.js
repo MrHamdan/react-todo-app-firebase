@@ -9,16 +9,14 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Box, Button, Checkbox, Typography } from '@mui/material';
 import logo from '../../logo.svg';
-import { Link, unstable_HistoryRouter, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import Swal from 'sweetalert2';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import '../../App.css';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import { child, get, getDatabase, ref } from 'firebase/database';
+import { child, get, getDatabase, ref, update } from 'firebase/database';
 import initializeAuthentication from '../Firebase/firebase.init';
 import useAuth from '../Hooks/useAuth';
 
@@ -26,9 +24,9 @@ import useAuth from '../Hooks/useAuth';
 const TodoTable = () => {
   const [todoList, setTodoList] = useTodoProvider();
 
+  const [updatedStatus, setUpdatedStatus] = useState(false);
 
-
-  const { handleRegistration, handleEmailChange, handlePasswordChange, error, toggleLogin, isLogin, handleResetPassword, handleNameChange, handleGoogleSignIn, user, logOut } = useAuth();
+  const { handleGoogleSignIn, user, logOut } = useAuth();
   const location = useLocation();
 
   const history = useNavigate();
@@ -43,12 +41,6 @@ const TodoTable = () => {
         }
       })
   }
-
-
-
-
-
-
 
   let arr = [];
 
@@ -68,17 +60,28 @@ const TodoTable = () => {
   }
 
   const deleteMultipleTask = () => {
-    const filteredArray = todoList.filter((task) => {
-      return arr.indexOf(task) < 0;
 
+    arr.forEach(element => {
+      const dbRef = ref(getDatabase(initializeAuthentication()));
+      get(child(dbRef, `/todoList/${user.uid}/`)).then((snapshot) => {
+        setUpdatedStatus(false);
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+          const deletes = {};
+          deletes[`/todoList/${user.uid}/${element.id}/`] = null;
+          setUpdatedStatus(true);
+          return update(ref(getDatabase(initializeAuthentication())), deletes);
+
+
+
+        } else {
+          alert("No data available");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
     });
-
-    setTodoList(filteredArray);
   }
-
-
-
-
 
 
   useEffect(() => {
@@ -89,9 +92,10 @@ const TodoTable = () => {
           const todos = snapshot.val();
           const todoList = [];
           for (let id in todos) {
-            todoList.push(todos[id])
+            todoList.push({ id, ...todos[id] })
           }
           setTodoList(todoList);
+          console.log(todoList);
         } else {
           alert("No data available");
         }
@@ -99,47 +103,52 @@ const TodoTable = () => {
         console.error(error);
       });
     }
-  }, [user]);
-
-
-
-
-
-
+  }, [user, updatedStatus, setTodoList]);
 
 
 
   const handleDelete = id => {
-    const newTodoList = todoList.filter((todo) => todo.id !== id)
 
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          'Deleted!',
-          'Your file has been deleted.',
-          'success'
-        )
-        setTodoList(newTodoList);
-      }
-    })
-  }
+    const dbRef = ref(getDatabase(initializeAuthentication()));
+    get(child(dbRef, `/todoList/${user.uid}/`)).then((snapshot) => {
+      setUpdatedStatus(false);
+      if (snapshot.exists()) {
 
-  const handleToogle = id => {
-    const newTodoList = todoList.map((todo) => {
-      if (todo.id === id) {
-        todo.status = !todo.status;
+        console.log(snapshot.val());
+        const deletes = {};
+        deletes[`/todoList/${user.uid}/${id}/`] = null;
+        setUpdatedStatus(true);
+        return update(ref(getDatabase(initializeAuthentication())), deletes);
+
+
+
+      } else {
+        alert("No data available");
       }
-      return todo;
-    })
-    setTodoList(newTodoList);
+    }).catch((error) => {
+      console.error(error);
+    });
+  };
+
+
+  const handleToogle = (todoid) => {
+    if (updatedStatus) {
+      setUpdatedStatus(false);
+    }
+    const dbRef = ref(getDatabase(initializeAuthentication()));
+    get(child(dbRef, `/todoList/${user.uid}/${todoid}/status`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const status = snapshot.val();
+        const updates = {};
+        updates[`/todoList/${user.uid}/${todoid}/status`] = !status;
+        setUpdatedStatus(true);
+        return update(ref(getDatabase(initializeAuthentication())), updates,);
+      } else {
+        alert("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   return (
@@ -163,9 +172,9 @@ const TodoTable = () => {
           fontSize: '20px'
         }}>
         <Button sx={{ marginBottom: '30px', backgroundColor: '#61dafb !important', color: 'black !important', textDecoration: 'none', fontWeight: 'bold', fontSize: '20px' }} variant='contained'>Add Task<AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button></Link>
-      <Button variant="contained" color="warning" sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>
+      {user.email && <Button variant="contained" color="warning" sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>}
       {user?.email ?
-        <Button variant="contained" color="secondary" sx={{ mb: 2 }} onClick={logOut}>Log Out</Button>
+        <Button variant="contained" color="secondary" sx={{ mb: 2 }} onClick={logOut}>Sign Out</Button>
         :
         <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={signInUsingGoogle}>Google Sign In</Button>}
       <TableContainer component={Paper}>
@@ -179,7 +188,7 @@ const TodoTable = () => {
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          {user.email && <TableBody>
             {todoList.map((todo, index) => (
               <TableRow
                 key={todo.id}
@@ -223,7 +232,7 @@ const TodoTable = () => {
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody>
+          </TableBody>}
         </Table>
       </TableContainer>
     </>
