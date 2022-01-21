@@ -28,12 +28,6 @@ const useFirebase = () => {
         setIsLogin(e.target.checked)
     }
 
-
-
-
-
-
-
     //observe user state change
     useEffect(() => {
         const unsubscribed = onAuthStateChanged(auth, user => {
@@ -46,11 +40,7 @@ const useFirebase = () => {
             setIsLoading(false);
         });
         return () => unsubscribed;
-    }, [])
-
-
-
-
+    }, [auth])
 
 
     const logOut = () => {
