@@ -13,7 +13,7 @@ import useAuth from '../Hooks/useAuth';
 
 const Form = () => {
     const { user } = useAuth();
-    const [todoList, setTodoList] = useTodoProvider();
+    const [todoList] = useTodoProvider();
     const { todoid } = useParams();
     const selectedTask = todoList.find((task) => task.id === todoid);
     const today = new Date();
