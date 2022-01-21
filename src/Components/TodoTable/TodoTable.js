@@ -94,13 +94,13 @@ const TodoTable = () => {
           setTodoList(todoList);
           console.log(todoList);
         } else {
-          alert("No data available");
+          setTodoList([]);
         }
       }).catch((error) => {
         console.error(error);
       });
     }
-  }, [user, updatedStatus, setTodoList]);
+  }, [user, updatedStatus]);
 
 
 
