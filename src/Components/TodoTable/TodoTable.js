@@ -71,9 +71,6 @@ const TodoTable = () => {
           deletes[`/todoList/${user.uid}/${element.id}/`] = null;
           setUpdatedStatus(true);
           return update(ref(getDatabase(initializeAuthentication())), deletes);
-
-
-
         } else {
           alert("No data available");
         }
@@ -164,14 +161,14 @@ const TodoTable = () => {
           <h5 style={{ color: '#61dafb' }}>{user.email}</h5>
         </Box>
       </Box>
-      <Link to='addtodo'
+      {user.email && <Link to='addtodo'
         style={{
           color: 'black',
           textDecoration: 'none',
           fontWeight: 'bold',
           fontSize: '20px'
         }}>
-        <Button sx={{ marginBottom: '30px', backgroundColor: '#61dafb !important', color: 'black !important', textDecoration: 'none', fontWeight: 'bold', fontSize: '20px' }} variant='contained'>Add Task<AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button></Link>
+        <Button sx={{ marginBottom: '30px', backgroundColor: '#61dafb !important', color: 'black !important', textDecoration: 'none', fontWeight: 'bold', fontSize: '20px' }} variant='contained'>Add Task<AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button></Link>}
       {user.email && <Button variant="contained" color="warning" sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>}
       {user?.email ?
         <Button variant="contained" color="secondary" sx={{ mb: 2 }} onClick={logOut}>Sign Out</Button>
