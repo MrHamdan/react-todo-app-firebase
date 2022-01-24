@@ -39,6 +39,13 @@ const LoginRegister = () => {
         }
         else {
             registerNewUser(email, password);
+            Swal.fire({
+                position: 'middle',
+                icon: 'success',
+                title: 'You Have Been Registered',
+                showConfirmButton: false,
+                timer: 1500
+            })
             navigate('/');
         }
 
