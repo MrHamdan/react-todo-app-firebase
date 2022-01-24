@@ -4,6 +4,7 @@ import TodoTable from './Components/TodoTable/TodoTable';
 import TodoDataProvider from './Context/TodoDataProvider';
 import TodoFormShower from './Components/TodoFormShower/TodoFormShower';
 import AuthProvider from './Context/AuthProvider';
+import LoginRegister from './Components/LoginRegister/LoginRegister';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/" element={<TodoTable />} />
                 <Route path="addtodo" element={<TodoFormShower />} />
                 <Route path="edittodo/:todoid" element={<TodoFormShower />} />
+                <Route path="login" element={<LoginRegister />} />
               </Routes>
             </BrowserRouter>
           </TodoDataProvider>

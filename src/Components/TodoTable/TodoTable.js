@@ -171,6 +171,14 @@ const TodoTable = () => {
         <Button sx={{ marginBottom: '30px', backgroundColor: '#61dafb !important', color: 'black !important', textDecoration: 'none', fontWeight: 'bold', fontSize: '20px' }} variant='contained'>Add Task<AddTaskIcon sx={{ fontSize: '20px', marginLeft: '10px', color: 'black' }}></AddTaskIcon></Button></Link>}
       {user.email && <Button variant="contained" color="warning" sx={{ mb: 2 }} onClick={deleteMultipleTask}>Delete</Button>}
       {user?.email ?
+        <></>
+        : <Link to="login" style={{
+          color: 'black',
+          textDecoration: 'none',
+          fontWeight: 'bold',
+          fontSize: '20px'
+        }}><Button variant="contained" color="success" sx={{ marginBottom: '30px' }}>Login / Register</Button></Link>}
+      {user?.email ?
         <Button variant="contained" color="secondary" sx={{ mb: 2 }} onClick={logOut}>Sign Out</Button>
         :
         <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={signInUsingGoogle}>Google Sign In</Button>}
